@@ -8,8 +8,15 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
+    "@douyinfe/semi-ui": "^2.76.0",
+    "ant-design-vue": "^4.2.6",
+    "axios": "^1.8.3",
     "core-js": "^3.8.3",
-    "vue": "^3.2.13"
+    "markdown-it": "^14.1.0",
+    "marked": "^15.0.7",
+    "vue": "^3.2.13",
+    "vue-router": "^4.4.5",
+    "vuex": "^4.0.2"
   },
   "devDependencies": {
     "@babel/core": "^7.12.16",
