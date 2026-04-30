@@ -13,7 +13,7 @@
         <div class="chat-container">
           <!-- 当前对话的概括 -->
           <div v-if="currentSummary" class="current-summary">
-            当前对话: {{ currentSummary }}
+            当前对话 · {{ currentSummary }}
           </div>
   
           <!-- 模型选择下拉框 -->
@@ -55,7 +55,7 @@
             <textarea
               v-model="inputText"
               @keyup.enter="sendMessage"
-              placeholder="请输入你的问题..."
+              placeholder="给 AI 发送消息..."
               :disabled="isLoading"
             ></textarea>
             <button @click="sendMessage" :disabled="isLoading || isStopping">
@@ -70,6 +70,9 @@
         <!-- 用户名显示和退出登录按钮 -->
         <div class="user-info">
             <span>{{ username }}</span>
+            <button @click="toggleTheme">
+              {{ isDark ? '白天模式' : '黑夜模式' }}
+            </button>
             <button @click="logout">退出登录</button>
         </div>
       </div>
@@ -79,7 +82,8 @@
   <script>
   import { ref, computed, onMounted } from 'vue';
   import MarkdownIt from 'markdown-it';
-  import SideBar from '../components/SideBar.vue'; // 引入侧边栏组件
+  import SideBar from '@/components/SideBar.vue'; // 引入侧边栏组件
+  import { useTheme } from '@/composables/useTheme';
   import axios from 'axios';
   
   export default {
@@ -93,6 +97,8 @@
         }
     },
     setup() {
+      const { isDark, toggleTheme } = useTheme();
+
       // 生成唯一 sessionId 的函数
       const generateSessionId = () => {
         return Date.now().toString(36) + Math.random().toString(36).substr(2, 9);
@@ -331,6 +337,8 @@
 
   
       return {
+        isDark,
+        toggleTheme,
         inputText,
         isLoading,
         isStopping,
@@ -359,9 +367,14 @@
   <style>
   .chat-app {
     display: flex;
-    height: 100vh;
+    height: 100dvh;
     width: 100%;
-    background-color: #f5f7fa;
+    background:
+      radial-gradient(1200px 600px at 65% -10%, rgba(91, 109, 255, 0.24), transparent 55%),
+      radial-gradient(900px 500px at 10% 100%, rgba(49, 61, 111, 0.3), transparent 55%),
+      #090b12;
+    color: var(--chat-text-main);
+    font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   }
   
   .main-content {
@@ -370,68 +383,62 @@
     width: 100%;
     justify-content: center;
     padding: 20px;
+    position: relative;
   }
   
   .chat-container {
     width: 100%;
-    max-width: 800px;
+    max-width: 920px;
     display: flex;
     flex-direction: column;
-    background-color: #fff;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    background: var(--chat-card-bg);
+    border-radius: 16px;
+    border: 1px solid var(--chat-card-border);
+    box-shadow: 0 28px 70px rgba(0, 0, 0, 0.45);
+    backdrop-filter: blur(10px);
+    overflow: hidden;
   }
   
   .current-summary {
-    padding: 15px;
-    background-color: #ebedef;
-    border-bottom: 1px solid #ddd;
-    font-size: 14px;
-    color: #333;
+    padding: 14px 20px 12px;
+    background: rgba(255, 255, 255, 0.02);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    font-size: 13px;
+    letter-spacing: 0.01em;
+    color: var(--chat-text-muted);
   }
   
   .model-selector {
-    padding: 10px;
+    padding: 14px 20px 10px;
     text-align: left;
   }
   
   .model-selector select {
-    padding: 5px;
-    border: none;
-    font-size: 16px;
-    font-family: '楷体', self; /*设置字体为楷体 */
+    min-width: 160px;
+    padding: 8px 12px;
+    border: 1px solid var(--chat-input-border);
+    border-radius: 10px;
+    background: var(--chat-panel-bg);
+    color: var(--chat-text-main);
+    font-size: 13px;
+    transition: border-color 0.2s ease, background-color 0.2s ease;
   }
   
-  .model-selector select option {
-    font-size: 16px; /* 设置字体大小 */
-    font-family: '楷体', serif; /* 设置字体为楷体 */
-    padding: 5px 10px; /* 添加一些内边距 */
-  }
-  
-  .model-selector label {
-    font-weight: bold;
-    margin-right: 10px;
-    cursor: pointer; /* 将鼠标指针更改为手形 */
-    padding: 5px 10px; /* 添加一些内边距 */
-    border: 1px solid #ccc; /* 添加一个边框 */
-    border-radius: 4px; /* 添加圆角 */
-    background-color: #f0f0f0; /* 添加一个背景颜色 */
-    transition: background-color 0.3s; /* 添加一个过渡效果 */
-  }
-  
-  .model-selector label:hover {
-    background-color: #e0e0e0; /* 添加一个悬停效果 */
+  .model-selector select:focus {
+    outline: none;
+    border-color: var(--chat-focus-border);
+    background: var(--chat-panel-bg-hover);
   }
   
   .chat-history {
     flex: 1;
     overflow-y: auto;
-    padding: 20px;
-    border-bottom: 1px solid #ddd;
+    padding: 8px 20px 12px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   }
   
   .message {
-    margin-bottom: 20px;
+    margin-bottom: 14px;
     position: relative;
   }
   
@@ -444,121 +451,167 @@
   }
   
   .role {
-    font-weight: bold;
+    font-weight: 600;
     margin-bottom: 5px;
-    color: #5d6a76;
+    color: var(--chat-text-muted);
+    font-size: 12px;
+    letter-spacing: 0.01em;
   }
   
   .content {
     display: inline-block;
-    padding: 12px 16px;
+    max-width: min(82ch, 100%);
+    padding: 12px 14px;
     border-radius: 12px;
-    background-color: #ebedef;
     position: relative;
-    word-wrap: break-word;
+    word-break: break-word;
+    line-height: 1.6;
+    font-size: 14px;
+    transition: transform 0.22s ease, box-shadow 0.22s ease;
   }
   
   .message.user .content {
-    background-color: #dcf8c6;
-    color: #13ce66;
+    background: var(--chat-user-bubble-bg);
+    color: var(--chat-user-bubble-text);
+    box-shadow: 0 12px 24px rgba(38, 62, 145, 0.2);
   }
   
   .message.assistant .content {
-    background-color: #ebedef;
-    color: #333;
+    background: var(--chat-assistant-bubble-bg);
+    border: 1px solid var(--chat-card-border);
+    color: var(--chat-text-main);
+  }
+
+  .message .content:hover {
+    transform: translateY(-1px);
   }
   
-  /* 复制按钮样式 */
   .copy-button {
     position: absolute;
-    top: 5px;
-    right: 5px;
+    top: 6px;
+    right: 8px;
     background: none;
     border: none;
     cursor: pointer;
-    font-size: 14px;
-    color: #0c0606;
+    font-size: 12px;
+    color: var(--chat-text-muted);
     opacity: 0;
-    transition: opacity 0.3s ease;
+    transition: opacity 0.2s ease, color 0.2s ease;
   }
   
   .message.assistant .content:hover .copy-button {
     opacity: 1;
   }
+
+  .copy-button:hover {
+    color: var(--chat-text-main);
+  }
   
   .error-message {
-    margin-top: 10px;
-    padding: 10px;
-    border-radius: 4px;
-    background-color: #ffebee;
-    color: #c62828;
+    margin-top: 8px;
+    padding: 10px 12px;
+    border-radius: 10px;
+    background: rgba(255, 107, 107, 0.12);
+    color: #ffb1b1;
     text-align: center;
+    border: 1px solid rgba(255, 107, 107, 0.28);
   }
   
   .chat-input {
     display: flex;
     gap: 10px;
-    padding: 20px;
-    background-color: #fff;
+    padding: 16px 20px 18px;
+    background: rgba(7, 10, 17, 0.45);
   }
   
   .chat-input textarea {
     flex: 1;
-    padding: 12px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    font-size: 16px;
+    padding: 12px 14px;
+    border: 1px solid var(--chat-input-border);
+    border-radius: 10px;
+    font-size: 14px;
     resize: none;
-    min-height: 100px;
-    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+    min-height: 84px;
+    background: var(--chat-panel-bg);
+    color: var(--chat-text-main);
+    transition: border-color 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .chat-input textarea::placeholder {
+    color: var(--chat-text-muted);
+  }
+
+  .chat-input textarea:focus {
     outline: none;
+    border-color: var(--chat-focus-border);
+    box-shadow: 0 0 0 3px var(--chat-focus-shadow);
+    background: var(--chat-panel-bg-hover);
   }
   
   .chat-input button {
-    padding: 12px 24px;
+    padding: 0 16px;
     border: none;
-    border-radius: 8px;
-    background-color: #1554ca;
-    color: white;
+    border-radius: 10px;
+    background: var(--chat-button-bg);
+    color: var(--chat-button-text);
     cursor: pointer;
-    font-size: 16px;
-    transition: background-color 0.3s ease;
+    font-size: 13px;
+    font-weight: 600;
+    transition: transform 0.2s ease, opacity 0.2s ease, box-shadow 0.25s ease;
   }
   
   .chat-input button:disabled {
-    background-color: #ccc;
     cursor: not-allowed;
+    opacity: 0.5;
   }
   
   .chat-input button:hover:not(:disabled) {
-    background-color: #003d99;
+    transform: translateY(-1px);
+    box-shadow: 0 10px 24px rgba(153, 169, 247, 0.34);
   }
 
   .user-info {
-  position: absolute;
-  top: 10px;
-  right: 20px;
-  font-size: 16px;
-  font-weight: bold;
-  display: flex;
-  align-items: center;
-}
+    position: absolute;
+    top: 14px;
+    right: 26px;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
 
-.user-info span {
-  margin-right: 10px;
-  color: #333;
-}
+  .user-info span {
+    color: var(--chat-text-muted);
+  }
 
-.user-info button {
-  background-color: transparent;
-  border: none;
-  color: #007bff;
-  cursor: pointer;
-  text-decoration: underline;
-  font-size: 16px;
-}
+  .user-info button {
+    background: transparent;
+    border: 1px solid var(--chat-input-border);
+    border-radius: 8px;
+    color: var(--chat-text-main);
+    cursor: pointer;
+    font-size: 12px;
+    padding: 6px 10px;
+    transition: border-color 0.2s ease, color 0.2s ease, background-color 0.2s ease;
+  }
 
-.user-info button:hover {
-  color: #0056b3;
-}
+  .user-info button:hover {
+    border-color: var(--chat-focus-border);
+    color: var(--chat-text-main);
+    background: var(--chat-panel-bg-hover);
+  }
+
+  @media (max-width: 900px) {
+    .main-content {
+      padding: 12px;
+    }
+
+    .chat-input {
+      flex-wrap: wrap;
+    }
+
+    .chat-input button {
+      height: 40px;
+    }
+  }
   </style>

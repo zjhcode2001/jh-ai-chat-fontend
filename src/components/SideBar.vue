@@ -52,51 +52,63 @@
   
   <style scoped>
   .sidebar {
-    width: 250px;
-    background-color: #2c3e50;
-    color: white;
-    padding: 20px;
+    width: 264px;
+    background: var(--chat-card-bg);
+    color: var(--chat-text-main);
+    padding: 20px 14px;
     display: flex;
     flex-direction: column;
-    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    border-right: 1px solid var(--chat-card-border);
+    backdrop-filter: blur(10px);
   }
-  
+
   .new-chat-button {
-    padding: 10px;
-    background-color: #3498db;
-    color: white;
-    border: none;
-    border-radius: 8px;
+    width: 100%;
+    padding: 12px 14px;
+    background: var(--chat-button-bg);
+    color: var(--chat-button-text);
+    border: 0;
+    border-radius: 12px;
     cursor: pointer;
-    font-size: 16px;
-    margin-bottom: 20px;
-    transition: background-color 0.3s ease;
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 16px;
+    letter-spacing: 0.01em;
+    transition: transform 0.2s ease, box-shadow 0.25s ease, opacity 0.25s ease;
   }
-  
+
   .new-chat-button:hover {
-    background-color: #2980b9;
+    transform: translateY(-1px);
+    box-shadow: 0 8px 20px rgba(147, 162, 255, 0.35);
   }
-  
+
   .chat-list {
     flex: 1;
     overflow-y: auto;
+    padding-right: 4px;
   }
-  
+
   .chat-item {
-    padding: 10px;
-    margin-bottom: 10px;
-    border-radius: 8px;
+    padding: 11px 12px;
+    margin-bottom: 8px;
+    border-radius: 10px;
     cursor: pointer;
-    transition: background-color 0.3s ease;
-    background-color: #34495e;
+    transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+    background: var(--chat-panel-bg);
+    color: var(--chat-text-muted);
+    font-size: 13px;
+    line-height: 1.4;
   }
-  
+
   .chat-item:hover {
-    background-color: #3b4f63;
+    background: var(--chat-panel-bg-hover);
+    color: var(--chat-text-main);
+    transform: translateX(2px);
   }
-  
+
   .chat-item.active {
-    background-color: #3498db;
-    color: white;
+    background: var(--chat-panel-bg-hover);
+    color: var(--chat-text-main);
+    border: 1px solid var(--chat-focus-border);
   }
   </style>
