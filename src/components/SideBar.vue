@@ -52,13 +52,14 @@
   
   <style scoped>
   .sidebar {
-    width: 264px;
-    background: var(--chat-card-bg);
+    flex: 1;
+    min-height: 0;
+    width: 100%;
+    background: transparent;
     color: var(--chat-text-main);
-    padding: 20px 14px;
+    padding: 12px 14px 20px;
     display: flex;
     flex-direction: column;
-    border-right: 1px solid var(--chat-card-border);
     backdrop-filter: blur(10px);
   }
 

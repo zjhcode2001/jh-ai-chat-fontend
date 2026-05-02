@@ -4,8 +4,14 @@
     <div class="background-glow"></div>
 
     <div class="login-card">
-      <button class="theme-toggle" @click="toggleTheme" type="button">
-        {{ isDark ? '切换到白天' : '切换到黑夜' }}
+      <button
+        class="theme-toggle"
+        @click="toggleTheme"
+        type="button"
+        :title="isDark ? '切换到白天模式' : '切换到黑夜模式'"
+        :aria-label="isDark ? '切换到白天模式' : '切换到黑夜模式'"
+      >
+        <span aria-hidden="true">{{ isDark ? '☀' : '☾' }}</span>
       </button>
       <div class="header">
         <div class="logo">
@@ -161,8 +167,13 @@ export default {
   border-radius: 10px;
   background: transparent;
   color: var(--text-muted);
-  font-size: 12px;
-  padding: 6px 10px;
+  font-size: 16px;
+  width: 34px;
+  height: 34px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
   cursor: pointer;
   transition: all 0.2s ease;
 }

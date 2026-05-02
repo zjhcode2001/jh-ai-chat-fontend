@@ -41,6 +41,9 @@ export default {
   --chat-user-bubble-bg: linear-gradient(180deg, rgba(210, 221, 255, 0.94) 0%, rgba(191, 205, 255, 0.88) 100%);
   --chat-user-bubble-text: #101321;
   --chat-assistant-bubble-bg: rgba(255, 255, 255, 0.04);
+  --chat-bg-base: #090b12;
+  --chat-bg-glow-1: rgba(91, 109, 255, 0.24);
+  --chat-bg-glow-2: rgba(49, 61, 111, 0.3);
 }
 
 :root[data-theme='light'] {
@@ -70,6 +73,9 @@ export default {
   --chat-user-bubble-bg: linear-gradient(180deg, #dde6ff 0%, #cad7ff 100%);
   --chat-user-bubble-text: #111827;
   --chat-assistant-bubble-bg: rgba(17, 24, 39, 0.04);
+  --chat-bg-base: #f6f8ff;
+  --chat-bg-glow-1: rgba(99, 102, 241, 0.18);
+  --chat-bg-glow-2: rgba(56, 189, 248, 0.16);
 }
 
 #app {
